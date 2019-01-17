@@ -1,0 +1,19 @@
+{
+    "name": "LCD",
+    "version": "0.1",
+    "description": "LCD library",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "radio": "*"
+    },
+    "files": [
+        "README.md",
+        "LCD.ts",
+        "_locales/zh-cn/LCD-strings.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": false
+}
