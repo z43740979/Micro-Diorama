@@ -11,6 +11,7 @@ namespace LCD {
     let pixel_32k = 0x0f
 
     let init = false
+    let flag = false
 
     /**
      * The user defines the motor rotation direction.
@@ -89,6 +90,8 @@ namespace LCD {
         //% weight=10
         //% parts="neopixel"
         dislayImage() {
+            while(flag)
+            flag = true
             if (this.xStart + this.width > xMax || this.yStart + this.height > yMax || this.xStart < xMin || this.yStart < yMin) {
                 serial.writeLine("x from 0 to 320,y from 0 to 240")
                 return
@@ -102,6 +105,7 @@ namespace LCD {
             spiWrite16(this.yStart)
             spiEnd()
             spiWiat()
+            flag = false
         }
 
         /** 
@@ -115,6 +119,8 @@ namespace LCD {
         //% weight=10
         //% parts="neopixel"
         moveImage(xEnd: number, yEnd: number, color: colorType) {
+            while(flag)
+            flag = true
             if (this.xStart + this.width > xMax || this.yStart + this.height > yMax || this.xStart < xMin || this.yStart < yMin || xEnd < xMin || yEnd < yMin || xEnd + this.width > xMax || yEnd + this.height > yMax) {
                 serial.writeLine("x from 0 to 320,y from 0 to 240")
                 return
@@ -126,7 +132,7 @@ namespace LCD {
             let yEnd1 = 0
             let xStart2 = 0
             let yStart2 = 0
-            let xEnd2 = 0
+            let xEnd2 = 0 
             let yEnd2 = 0
             if ((xEnd >= this.xStart + this.width || xEnd + this.width <= this.xStart) || (yEnd >= this.yStart + this.height || yEnd + this.height <= this.yStart)) {
                 overlapping = 1
@@ -235,8 +241,8 @@ namespace LCD {
             spiWiat()
             this.xStart = xEnd
             this.yStart = yEnd
-        } 
-
+            flag = false
+        }
         /** 
          * Send all the changes to the image.
          */
@@ -245,6 +251,8 @@ namespace LCD {
         //% weight=10
         //% parts="neopixel"
         freeImage() {
+            while(flag)
+            flag = true
             this.name = ''
             this.xStart = 0
             this.yStart = 0
@@ -281,6 +289,7 @@ namespace LCD {
                 pixel_32k |= 0x8
                 this.pixel = 0
             }
+            flag = false
         }
     }
 
@@ -326,6 +335,8 @@ namespace LCD {
     //% block="Clear screen fill %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function clearScreen(color: colorType) {
+        while(flag)
+        flag = true
         lcdinit()
         spiStart()
         writeHead()
@@ -334,6 +345,7 @@ namespace LCD {
         spiWrite8(color)
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="displayCharacter"
@@ -343,6 +355,8 @@ namespace LCD {
     //% block="Display character %character color %colorType x starting position %x y starting position %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function displayCharacter(character: string, color: colorType, x: number, y: number) {
+        while(flag)
+        flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -362,6 +376,7 @@ namespace LCD {
         spiWrite8(color)
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="displayLine"
@@ -373,6 +388,8 @@ namespace LCD {
     //% block="Display line | color %colorType x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function displayLine(color: colorType, xs: number, ys: number, xe: number, ye: number) {
+        while(flag)
+        flag = true
         if (xs > xMax || xe > xMax || ys > yMax || ye > yMax || xs < xMin || xe < xMin || ys < yMin || ye < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -389,6 +406,7 @@ namespace LCD {
         spiWrite8(color)
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="displayCircle"
@@ -398,6 +416,8 @@ namespace LCD {
     //% block="Display circle | radius %radius color %color center coordinates x %x center coordinates y %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function displayCircle(radius: number, color: colorFillType, x: number, y: number) {
+        while(flag)
+        flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -422,6 +442,7 @@ namespace LCD {
         }
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="displayRectangle"
@@ -433,6 +454,8 @@ namespace LCD {
     //% block="Display rectangle | color %color x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function displayRectangle(color: colorFillType, xs: number, ys: number, xe: number, ye: number) {
+        while(flag)
+        flag = true
         if (xs > xMax || xe > xMax || ys > yMax || ye > yMax || xs < xMin || xe < xMin || ys < yMin || ye < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -452,9 +475,10 @@ namespace LCD {
         } else {
             spiWrite8(color)
             spiWrite8(0)
-        }
+        } 
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="displayPoint"
@@ -464,6 +488,8 @@ namespace LCD {
     //% block="Display point | color %colorType | x-coordinate %x | y-coordinate %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function displayPoint(color: colorType, x: number, y: number) {
+        while(flag)
+        flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -478,6 +504,7 @@ namespace LCD {
         spiWrite8(color)
         spiEnd()
         spiWiat()
+        flag = false
     }
 
     //% blockId="importImageName"
@@ -490,6 +517,8 @@ namespace LCD {
     //% color.fieldEditor="gridpicker" color.fieldOptions.column
     //% blockSetVariable=image
     export function importImageName(name: string, format: imageType, x: number, y: number, width: number, height: number): Image {
+        while(flag)
+        flag = true
         let image = new Image()
         let f = ""
         switch (format) {
@@ -559,6 +588,7 @@ namespace LCD {
         spiWrite8(image.pixel)
         spiEnd()
         spiWiat()
+        flag = false
         return image
     }
 
@@ -586,10 +616,14 @@ namespace LCD {
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
     export function touch(image1: Image, image2: Image): number {
+        while(flag)
+        flag = true
 //        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
-          if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart+ image1.width ) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart+ image1.height )) {
+        if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart+ image1.width ) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart+ image1.height )) {
+            flag = false
             return 1
-        } else {
+        }else {
+            flag = false
             return 0
         }
     }
@@ -602,6 +636,8 @@ namespace LCD {
     //% yEnd.min=0 yEnd.max=239
     //% block="Display image | name %name x starting position %xStart y starting position %yStart x ending position %xEnd y ending position %yEnd"
     export function directDislayImage(name: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+        while(flag)
+        flag = true
         if (xStart > 320 || xEnd > 320 || yStart > 240 || yEnd > 240 || xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -621,5 +657,6 @@ namespace LCD {
         spiWrite16(yEnd)
         spiEnd()
         spiWiat()
+        flag = false
     }
 }
