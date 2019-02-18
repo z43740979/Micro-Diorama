@@ -592,7 +592,7 @@ namespace LCD {
         return image
     }
 
-
+/*
     ///////////////////////////////////补充////////////////////////////////
     //% blockId="setBrightness"
     //% blockGap=10
@@ -611,7 +611,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
     }
-
+*/
     //% blockId="touch"
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
@@ -632,13 +632,13 @@ namespace LCD {
     //% blockGap=10
     //% xStart.min=0 xStart.max=319
     //% yStart.min=0 yStart.max=239
-    //% xEnd.min=0 xEnd.max=319
-    //% yEnd.min=0 yEnd.max=239
-    //% block="Display image | name %name x starting position %xStart y starting position %yStart x ending position %xEnd y ending position %yEnd"
-    export function directDislayImage(name: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+    //% xEnd.min=0 xEnd.max=320
+    //% yEnd.min=0 yEnd.max=240
+    //% block="Display image | name %name x starting position %xStart y starting position %yStart width %width height %height"
+    export function directDislayImage(name: string, xStart: number, yStart: number, width: number, height: number) {
         while(flag)
         flag = true
-        if (xStart > 320 || xEnd > 320 || yStart > 240 || yEnd > 240 || xStart < 0 || xEnd < 0 || yStart < 0 || yEnd < 0) {
+        if (xStart > 320 || width > 320 || yStart > 240 || height > 240 || xStart < 0 || width < 0 || yStart < 0 || height < 0) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
         }
@@ -653,8 +653,8 @@ namespace LCD {
         spiWrite8(0xff)
         spiWrite16(xStart)
         spiWrite16(yStart)
-        spiWrite16(xEnd)
-        spiWrite16(yEnd)
+        spiWrite16(width)
+        spiWrite16(height)
         spiEnd()
         spiWiat()
         flag = false

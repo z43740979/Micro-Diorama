@@ -33,7 +33,6 @@
     "LCD.displayRectangle|block": "画矩形 | 颜色为 %colorType x起始位置为 %xs y起始位置为 %ys x终止位置为 %xe y终止位置为 %ye",
     "LCD.displayPoint|block": "画点 | 颜色为 %colorType | x坐标 %x | y坐标 %y",
     "LCD.importImageName|block": "导入图片 | 名字为: %name 图片格式为 %format x起始位置为 %x y起始位置为 %y 宽度为 %width 高度为 %height",
-    "LCD.setBrightness|block": "设置亮度为%value",
     "LCD.touch|block": "判断 图片1%image1 与 图片2%image2 是否重叠",
-    "LCD.directDislayImage|block": "显示图片 | 名字为 %name x起始位置为 %xStart y起始位置为 %yStart x终止位置为 %xEnd y终止位置为 %yEnd"
+    "LCD.directDislayImage|block": "显示图片 | 名字为 %name x起始位置为 %xStart y起始位置为 %yStart 宽度为 %width 高度为 %height"
 }
