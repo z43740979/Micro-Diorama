@@ -27,6 +27,7 @@
     "LCD.Image.freeImage|block": "释放图片句柄 %image",
 
     "LCD.clearScreen|block": "清除屏幕并填充颜色为 %color",
+    "LCD.begin|block": "开始",
     "LCD.displayCharacter|block": "显示字符 %character 颜色为 %colorType x起始位置为 %x y起始位置为 %y",
     "LCD.displayLine|block": "画线 | 颜色为 %colorType x起始位置为 %xs y起始位置为 %ys x终止位置为 %xe y终止位置为 %ye",
     "LCD.displayCircle|block": "画圆 | 半径为 %radius 颜色为 %colorType 圆心坐标x为 %x 圆心坐标y为 %y",

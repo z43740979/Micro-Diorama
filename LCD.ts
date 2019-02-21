@@ -632,9 +632,9 @@ namespace LCD {
     //% blockGap=10
     //% xStart.min=0 xStart.max=319
     //% yStart.min=0 yStart.max=239
-    //% xEnd.min=0 xEnd.max=320
-    //% yEnd.min=0 yEnd.max=240
-    //% block="Display image | name %name x starting position %xStart y starting position %yStart width %width height %height"
+    //% width.min=0 width.max=320
+    //% height.min=0 height.max=240
+    //% block="Display image | name %name x starting position %xStart y starting position %yStart width %width height %height" 
     export function directDislayImage(name: string, xStart: number, yStart: number, width: number, height: number) {
         while(flag)
         flag = true
@@ -655,6 +655,23 @@ namespace LCD {
         spiWrite16(yStart)
         spiWrite16(width)
         spiWrite16(height)
+        spiEnd()
+        spiWiat()
+        flag = false
+    }
+    //% blockId="begin"
+    //% blockGap=10
+    //% block="begin"
+    export function begin() {
+        basic.pause(2000)
+        while(flag)
+        flag = true
+        lcdinit()
+        spiStart()
+        writeHead()
+        spiWrite8(0x07)
+        spiWrite8(0x01)
+        spiWrite8(BLAC)
         spiEnd()
         spiWiat()
         flag = false
