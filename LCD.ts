@@ -671,7 +671,7 @@ namespace LCD {
         writeHead()
         spiWrite8(0x07)
         spiWrite8(0x01)
-        spiWrite8(BLACKFILL)
+        spiWrite8(0x0B)
         spiEnd()
         spiWiat()
         flag = false
