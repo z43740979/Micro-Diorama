@@ -663,7 +663,7 @@ namespace LCD {
     //% blockGap=10
     //% block="begin"
     export function begin() {
-        basic.pause(2000)
+        basic.pause(4000)
         while(flag)
         flag = true
         lcdinit()
