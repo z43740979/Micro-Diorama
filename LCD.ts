@@ -12,6 +12,7 @@ namespace LCD {
 
     let init = false
     let flag = false
+    let bgColor = 2
 
     /**
      * The user defines the motor rotation direction.
@@ -111,14 +112,13 @@ namespace LCD {
         /** 
          * Send all the changes to the image.
          */
-        //% blockId="moveImage" block="Move image %image to x %xEnd y%yEnd background as %color"
+        //% blockId="moveImage" block="Move image %image to x %xEnd y%yEnd"
         //% blockGap=8
-        //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
         //% xEnd.min=0 xEnd.max=319
         //% yEnd.min=0 yEnd.max=239
         //% weight=10
         //% parts="neopixel"
-        moveImage(xEnd: number, yEnd: number, color: colorType) {
+        moveImage(xEnd: number, yEnd: number) {
             while(flag)
             flag = true
             if (this.xStart + this.width > xMax || this.yStart + this.height > yMax || this.xStart < xMin || this.yStart < yMin || xEnd < xMin || yEnd < yMin || xEnd + this.width > xMax || yEnd + this.height > yMax) {
@@ -229,7 +229,7 @@ namespace LCD {
             spiWrite16(yStart1)
             spiWrite16(xEnd1)
             spiWrite16(yEnd1)
-            spiWrite8(color)
+            spiWrite8(bgColor)
             spiWrite16(xStart2)
             spiWrite16(yStart2)
             spiWrite16(xEnd2)
@@ -332,9 +332,10 @@ namespace LCD {
 
     //% blockId="clearScreen"
     //% blockGap=10
-    //% block="Clear screen fill %color"
+    //% block="Set background color to %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function clearScreen(color: colorType) {
+        bgColor = colorType
         while(flag)
         flag = true
         lcdinit()

@@ -1,5 +1,5 @@
 {
-	"LCD.colorType.RED|block": "红色",
+    "LCD.colorType.RED|block": "红色",
     "LCD.colorType.BLACK|block": "黑色",
     "LCD.colorType.WHITE|block": "白色",
     "LCD.colorType.GREEN|block": "绿色",
@@ -23,10 +23,10 @@
     "LCD.colorFillType.GRAYFILL|block": "灰色 填充",
 
     "LCD.Image.dislayImage|block": "显示图片 %image",
-    "LCD.Image.moveImage|block": "移动图片 %image 到 x %xEnd y%yEnd 背景填充为 %color",
+    "LCD.Image.moveImage|block": "移动图片 %image 到 x %xEnd y%yEnd",
     "LCD.Image.freeImage|block": "释放图片句柄 %image",
 
-    "LCD.clearScreen|block": "清除屏幕并填充颜色为 %color",
+    "LCD.clearScreen|block": "设置背景颜色为 %color",
     "LCD.begin|block": "开始",
     "LCD.displayCharacter|block": "显示字符 %character 颜色为 %colorType x起始位置为 %x y起始位置为 %y",
     "LCD.displayLine|block": "画线 | 颜色为 %colorType x起始位置为 %xs y起始位置为 %ys x终止位置为 %xe y终止位置为 %ye",
@@ -36,4 +36,4 @@
     "LCD.importImageName|block": "导入图片 | 名字为: %name 图片格式为 %format x起始位置为 %x y起始位置为 %y 宽度为 %width 高度为 %height",
     "LCD.touch|block": "判断 图片1%image1 与 图片2%image2 是否重叠",
     "LCD.directDislayImage|block": "显示图片 | 名字为 %name x起始位置为 %xStart y起始位置为 %yStart 宽度为 %width 高度为 %height"
-}
+}   
