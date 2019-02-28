@@ -1,4 +1,4 @@
- //% weight=10 color=#DC143C icon="\uf108" block="LCD"
+//% weight=10 color=#DC143C icon="\uf108" block="LCD"
 namespace LCD {
 
     const xMin = 0
@@ -12,7 +12,10 @@ namespace LCD {
 
     let init = false
     let flag = false
-    let bgColor = 2
+    let OBLOQ_MQTT_CB: Action = null
+    let _image1: Image = null
+    let _image2: Image = null
+    let _checkTouch = 0
 
     /**
      * The user defines the motor rotation direction.
@@ -68,12 +71,24 @@ namespace LCD {
         GRAYFILL = 16
     }
 
+    let bgColor = colorType.WHITE
+
     /**
      * The user defines the motor rotation direction.
      */
     export enum imageType {
         //% blockId="BMP" block="bmp"
         BMP = 0
+    }
+
+    /**
+     * The user defines the motor rotation direction.
+     */
+    export enum sizeType {
+        //% blockId="GBK16" block="GBK16"
+        GBK16 = 1,
+        //% blockId="GBK24" block="GBK24"
+        GBK24 = 0
     }
 
     export class Image {
@@ -86,13 +101,13 @@ namespace LCD {
 
         /** 
          * Send all the changes to the image.
-         */
+         
         //% blockId="dislayImage" block="Dislay image %image" blockGap=8
         //% weight=10
         //% parts="neopixel"
         dislayImage() {
-            while(flag)
-            flag = true
+            while (flag)
+                flag = true
             if (this.xStart + this.width > xMax || this.yStart + this.height > yMax || this.xStart < xMin || this.yStart < yMin) {
                 serial.writeLine("x from 0 to 320,y from 0 to 240")
                 return
@@ -108,19 +123,19 @@ namespace LCD {
             spiWiat()
             flag = false
         }
-
+        */
         /** 
          * Send all the changes to the image.
          */
-        //% blockId="moveImage" block="Move image %image to x %xEnd y%yEnd"
+        //% blockId="showImage" block="Show image %image at x %xEnd y%yEnd"
         //% blockGap=8
         //% xEnd.min=0 xEnd.max=319
         //% yEnd.min=0 yEnd.max=239
         //% weight=10
         //% parts="neopixel"
-        moveImage(xEnd: number, yEnd: number) {
-            while(flag)
-            flag = true
+        showImage(xEnd: number, yEnd: number) {
+            while (flag)
+                flag = true
             if (this.xStart + this.width > xMax || this.yStart + this.height > yMax || this.xStart < xMin || this.yStart < yMin || xEnd < xMin || yEnd < yMin || xEnd + this.width > xMax || yEnd + this.height > yMax) {
                 serial.writeLine("x from 0 to 320,y from 0 to 240")
                 return
@@ -132,7 +147,7 @@ namespace LCD {
             let yEnd1 = 0
             let xStart2 = 0
             let yStart2 = 0
-            let xEnd2 = 0 
+            let xEnd2 = 0
             let yEnd2 = 0
             if ((xEnd >= this.xStart + this.width || xEnd + this.width <= this.xStart) || (yEnd >= this.yStart + this.height || yEnd + this.height <= this.yStart)) {
                 overlapping = 1
@@ -243,16 +258,17 @@ namespace LCD {
             this.yStart = yEnd
             flag = false
         }
+
         /** 
          * Send all the changes to the image.
          */
-        //% blockId="FreeImage" block="release image handle %image"
+        //% blockId="freeImage" block="release image handle %image"
         //% blockGap=8
         //% weight=10
         //% parts="neopixel"
         freeImage() {
-            while(flag)
-            flag = true
+            while (flag)
+                flag = true
             this.name = ''
             this.xStart = 0
             this.yStart = 0
@@ -289,6 +305,32 @@ namespace LCD {
                 pixel_32k |= 0x8
                 this.pixel = 0
             }
+            flag = false
+        }
+
+        /** 
+         * Send all the changes to the image.
+         */
+        //% blockId="hideImage" block="Hide image %image"
+        //% blockGap=8
+        //% weight=10
+        //% parts="neopixel"
+        hideImage() {
+            while (flag)
+                flag = true
+            lcdinit()
+            spiStart()
+            writeHead()
+            spiWrite8(0x05)
+            spiWrite8(10)
+            spiWrite16(this.xStart)
+            spiWrite16(this.xStart + this.width)
+            spiWrite16(this.yStart)
+            spiWrite16(this.yStart + this.height)
+            spiWrite8(bgColor)
+            spiWrite8(1)
+            spiEnd()
+            spiWiat()
             flag = false
         }
     }
@@ -335,9 +377,9 @@ namespace LCD {
     //% block="Set background color to %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function clearScreen(color: colorType) {
-        bgColor = colorType
-        while(flag)
-        flag = true
+        bgColor = color
+        while (flag)
+            flag = true
         lcdinit()
         spiStart()
         writeHead()
@@ -353,11 +395,11 @@ namespace LCD {
     //% blockGap=10
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
-    //% block="Display character %character color %colorType x starting position %x y starting position %y"
+    //% block="Display character %character color %colorType x starting position %x y starting position %y size %sizeType"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
-    export function displayCharacter(character: string, color: colorType, x: number, y: number) {
-        while(flag)
-        flag = true
+    export function displayCharacter(character: string, color: colorType, x: number, y: number, size: sizeType) {
+        while (flag)
+            flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -375,22 +417,24 @@ namespace LCD {
         spiWrite16(x)
         spiWrite16(y)
         spiWrite8(color)
+        spiWrite8(bgColor)
+        spiWrite8(size)
         spiEnd()
         spiWiat()
         flag = false
     }
 
-    //% blockId="displayLine"
+    //% blockId="drawLine"
     //% blockGap=10
     //% xs.min=0 xs.max=319
     //% ys.min=0 ys.max=239
     //% xe.min=0 xe.max=319
     //% ye.min=0 ye.max=239
-    //% block="Display line | color %colorType x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
+    //% block="Drawline | color %colorType x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
-    export function displayLine(color: colorType, xs: number, ys: number, xe: number, ye: number) {
-        while(flag)
-        flag = true
+    export function drawLine(color: colorType, xs: number, ys: number, xe: number, ye: number) {
+        while (flag)
+            flag = true
         if (xs > xMax || xe > xMax || ys > yMax || ye > yMax || xs < xMin || xe < xMin || ys < yMin || ye < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -410,15 +454,15 @@ namespace LCD {
         flag = false
     }
 
-    //% blockId="displayCircle"
+    //% blockId="drawCircle"
     //% blockGap=10
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
-    //% block="Display circle | radius %radius color %color center coordinates x %x center coordinates y %y"
+    //% block="Draw circle | radius %radius color %color center coordinates x %x center coordinates y %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
-    export function displayCircle(radius: number, color: colorFillType, x: number, y: number) {
-        while(flag)
-        flag = true
+    export function drawCircle(radius: number, color: colorFillType, x: number, y: number) {
+        while (flag)
+            flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -446,17 +490,17 @@ namespace LCD {
         flag = false
     }
 
-    //% blockId="displayRectangle"
+    //% blockId="drawRectangle"
     //% blockGap=10
     //% xs.min=0 xs.max=319
     //% ys.min=0 ys.max=239
     //% xe.min=0 xe.max=319
     //% ye.min=0 ye.max=239
-    //% block="Display rectangle | color %color x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
+    //% block="Draw rectangle | color %color x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
-    export function displayRectangle(color: colorFillType, xs: number, ys: number, xe: number, ye: number) {
-        while(flag)
-        flag = true
+    export function drawRectangle(color: colorFillType, xs: number, ys: number, xe: number, ye: number) {
+        while (flag)
+            flag = true
         if (xs > xMax || xe > xMax || ys > yMax || ye > yMax || xs < xMin || xe < xMin || ys < yMin || ye < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -476,27 +520,27 @@ namespace LCD {
         } else {
             spiWrite8(color)
             spiWrite8(0)
-        } 
+        }
         spiEnd()
         spiWiat()
         flag = false
     }
 
-    //% blockId="displayPoint"
+    //% blockId="drawPoint"
     //% blockGap=10
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
-    //% block="Display point | color %colorType | x-coordinate %x | y-coordinate %y"
+    //% block="Draw point | color %colorType | x-coordinate %x | y-coordinate %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
-    export function displayPoint(color: colorType, x: number, y: number) {
-        while(flag)
-        flag = true
+    export function drawPoint(color: colorType, x: number, y: number) {
+        while (flag)
+            flag = true
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
         }
         lcdinit()
-        spiStart()  
+        spiStart()
         writeHead()
         spiWrite8(0x03)
         spiWrite8(5)
@@ -510,16 +554,14 @@ namespace LCD {
 
     //% blockId="importImageName"
     //% blockGap=10
-    //% x.min=0 x.max=319
-    //% y.min=0 y.max=239
     //% width.min=0 width.max=320
     //% height.min=0 height.max=240
-    //% block="Import image | name: %name format %format x starting position %x y starting position %y width %width height %height"
+    //% block="Import image | name: %name format %format width %width height %height"
     //% color.fieldEditor="gridpicker" color.fieldOptions.column
     //% blockSetVariable=image
-    export function importImageName(name: string, format: imageType, x: number, y: number, width: number, height: number): Image {
-        while(flag)
-        flag = true
+    export function importImageName(name: string, format: imageType, width: number, height: number): Image {
+        while (flag)
+            flag = true
         let image = new Image()
         let f = ""
         switch (format) {
@@ -527,8 +569,10 @@ namespace LCD {
             default: f = ".bmp"; break;
         }
         image.name = name + f
-        image.xStart = x
-        image.yStart = y
+        let x = 0
+        let y = 0
+        image.xStart = 0
+        image.yStart = 0
         image.width = width
         image.height = height
         if (x + width > 320 || y + height > 240 || x < 0 || y < 0 || width < 0 || height < 0 || width > 128 || height > 128) {
@@ -593,37 +637,38 @@ namespace LCD {
         return image
     }
 
-/*
-    ///////////////////////////////////补充////////////////////////////////
-    //% blockId="setBrightness"
-    //% blockGap=10
-    //% value.min=0 value.max=255
-    //% block="Set the brightness to %value"
-    export function setBrightness(value: number) {
-        if (value > 255 || value < 0) {
-            serial.writeLine("value from 0 to 255")
-            return
+    /*
+        ///////////////////////////////////补充////////////////////////////////
+        //% blockId="setBrightness"
+        //% blockGap=10
+        //% value.min=0 value.max=255
+        //% block="Set the brightness to %value"
+        export function setBrightness(value: number) {
+            if (value > 255 || value < 0) {
+                serial.writeLine("value from 0 to 255")
+                return
+            }
+            lcdinit()
+            spiStart()
+            writeHead()
+            spiWrite8(0x01)
+            spiWrite8(value)
+            spiEnd()
+            spiWiat()
         }
-        lcdinit()
-        spiStart()
-        writeHead()
-        spiWrite8(0x01)
-        spiWrite8(value)
-        spiEnd()
-        spiWiat()
-    }
-*/
+    */
     //% blockId="touch"
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
     export function touch(image1: Image, image2: Image): number {
-        while(flag)
-        flag = true
-//        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
-        if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart+ image1.width ) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart+ image1.height )) {
+        if (!image1 || !image2) return 0
+        while (flag)
+            flag = true
+        //        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
+        if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart + image1.width) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart + image1.height)) {
             flag = false
             return 1
-        }else {
+        } else {
             flag = false
             return 0
         }
@@ -637,8 +682,8 @@ namespace LCD {
     //% height.min=0 height.max=240
     //% block="Display image | name %name x starting position %xStart y starting position %yStart width %width height %height" 
     export function directDislayImage(name: string, xStart: number, yStart: number, width: number, height: number) {
-        while(flag)
-        flag = true
+        while (flag)
+            flag = true
         if (xStart > 320 || width > 320 || yStart > 240 || height > 240 || xStart < 0 || width < 0 || yStart < 0 || height < 0) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
             return
@@ -664,9 +709,19 @@ namespace LCD {
     //% blockGap=10
     //% block="begin"
     export function begin() {
-        basic.pause(4000)
-        while(flag)
-        flag = true
+        while (pins.digitalReadPin(DigitalPin.P14) == 0) {
+            spiStart()
+            basic.pause(100)
+            spiEnd()
+            basic.pause(100)
+        }
+        spiStart()
+        basic.pause(100)
+        spiEnd()
+        basic.pause(100)
+        basic.pause(500)
+        while (flag)
+            flag = true
         lcdinit()
         spiStart()
         writeHead()
@@ -677,4 +732,23 @@ namespace LCD {
         spiWiat()
         flag = false
     }
+ 
+    /**
+     * Registers code to run on various melody events
+     */
+    //% blockId=onEventaa block="image1 %image1 | image2 %image2"
+    //% help=music/on-event weight=59 blockGap=32
+    export function onEventaa(image1: Image, image2: Image, handler: () => void) {
+        OBLOQ_MQTT_CB = handler
+        _image1 = image1
+        _image2 = image2
+        _checkTouch =1
+    }
+
+    basic.forever(function () {
+        if (_checkTouch && LCD.touch(_image1, _image2)) {
+            OBLOQ_MQTT_CB()
+        }
+    })
+
 }
