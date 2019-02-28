@@ -2,7 +2,7 @@
 //%
 enum GamerBitPin {
     //% block="P6"
-    P6 = <number>DAL.MICROBIT_ID_IO_P0,
+    P6 = <number>DAL.MICROBIT_ID_IO_P6,
     //% block="P7"
     P7 = <number>DAL.MICROBIT_ID_IO_P7,
     //% block="P8"
@@ -37,10 +37,10 @@ namespace LCD {
 
     let init = false
     let flag = false
-//    let OBLOQ_MQTT_CB: Action = null
-//    let _image1: Image = null
-//    let _image2: Image = null
-//    let _checkTouch = 0
+    //    let OBLOQ_MQTT_CB: Action = null
+    //    let _image1: Image = null
+    //    let _image2: Image = null
+    //    let _checkTouch = 0
 
     /**
      * The user defines the motor rotation direction.
@@ -97,6 +97,11 @@ namespace LCD {
     }
 
     let bgColor = colorType.WHITE
+
+    //% shim=LCD::pinInit
+    function pinInit(): void {
+        return;
+    }
 
     /**
      * The user defines the motor rotation direction.
@@ -686,7 +691,7 @@ namespace LCD {
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
     export function touch(image1: Image, image2: Image): number {
-        if (!image1|| !image2) return 0
+        if (!image1 || !image2) return 0
         while (flag)
             flag = true
         //        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
@@ -763,30 +768,31 @@ namespace LCD {
      */
     //% weight=60
     //% blockGap=50
-    //% blockId=gamePad_onEvent block="on button|%button"
+    //% blockId=gamePad_onEvent block="on pin |%button press"
     //% button.fieldEditor="gridpicker" button.fieldOptions.columns=3
     export function onEvent(button: GamerBitPin, handler: Action) {
+        pinInit()
         control.onEvent(<number>button, <number>GamerBitEvent.Down, handler); // register handler
     }
 
     /**
      * Registers code to run on various melody events
      */
- /*  
-    //% blockId=onEventaa block="image1 %image1 | image2 %image2"
-    //% help=music/on-event weight=59 blockGap=32
-    export function onEventaa(image1: Image, image2: Image, handler: () => void) {
-        OBLOQ_MQTT_CB = handler
-        _image1 = image1
-        _image2 = image2
-        _checkTouch = 1
-    }
-
-    basic.forever(function () {
-        if (_checkTouch && LCD.touch(_image1, _image2)) {
-            OBLOQ_MQTT_CB()
-        }
-    })
-*/
+    /*  
+       //% blockId=onEventaa block="image1 %image1 | image2 %image2"
+       //% help=music/on-event weight=59 blockGap=32
+       export function onEventaa(image1: Image, image2: Image, handler: () => void) {
+           OBLOQ_MQTT_CB = handler
+           _image1 = image1
+           _image2 = image2
+           _checkTouch = 1
+       }
+   
+       basic.forever(function () {
+           if (_checkTouch && LCD.touch(_image1, _image2)) {
+               OBLOQ_MQTT_CB()
+           }
+       })
+   */
 
 }
