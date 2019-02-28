@@ -1,3 +1,28 @@
+
+//%
+enum GamerBitPin {
+    //% block="P6"
+    P6 = <number>DAL.MICROBIT_ID_IO_P0,
+    //% block="P7"
+    P7 = <number>DAL.MICROBIT_ID_IO_P7,
+    //% block="P8"
+    P8 = <number>DAL.MICROBIT_ID_IO_P8,
+    //% block="P9"
+    P9 = <number>DAL.MICROBIT_ID_IO_P9,
+    //% block="P10"
+    P10 = <number>DAL.MICROBIT_ID_IO_P10
+}
+
+//%
+enum GamerBitEvent {
+    //% block="pressed"
+    Down = DAL.MICROBIT_BUTTON_EVT_DOWN,
+    //% block="released"
+    Up = DAL.MICROBIT_BUTTON_EVT_UP,
+    //% block="click"
+    Click = DAL.MICROBIT_BUTTON_EVT_CLICK,
+}
+
 //% weight=10 color=#DC143C icon="\uf108" block="LCD"
 namespace LCD {
 
@@ -12,10 +37,10 @@ namespace LCD {
 
     let init = false
     let flag = false
-    let OBLOQ_MQTT_CB: Action = null
-    let _image1: Image = null
-    let _image2: Image = null
-    let _checkTouch = 0
+//    let OBLOQ_MQTT_CB: Action = null
+//    let _image1: Image = null
+//    let _image2: Image = null
+//    let _checkTouch = 0
 
     /**
      * The user defines the motor rotation direction.
@@ -661,7 +686,7 @@ namespace LCD {
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
     export function touch(image1: Image, image2: Image): number {
-        if (!image1 || !image2) return 0
+        if (!image1|| !image2) return 0
         while (flag)
             flag = true
         //        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
@@ -732,17 +757,29 @@ namespace LCD {
         spiWiat()
         flag = false
     }
- 
+
+    /**
+     * Registers code to run when a DFRobot gamer:bit event is detected.
+     */
+    //% weight=60
+    //% blockGap=50
+    //% blockId=gamePad_onEvent block="on button|%button"
+    //% button.fieldEditor="gridpicker" button.fieldOptions.columns=3
+    export function onEvent(button: GamerBitPin, handler: Action) {
+        control.onEvent(<number>button, <number>GamerBitEvent.Down, handler); // register handler
+    }
+
     /**
      * Registers code to run on various melody events
      */
+ /*  
     //% blockId=onEventaa block="image1 %image1 | image2 %image2"
     //% help=music/on-event weight=59 blockGap=32
     export function onEventaa(image1: Image, image2: Image, handler: () => void) {
         OBLOQ_MQTT_CB = handler
         _image1 = image1
         _image2 = image2
-        _checkTouch =1
+        _checkTouch = 1
     }
 
     basic.forever(function () {
@@ -750,5 +787,6 @@ namespace LCD {
             OBLOQ_MQTT_CB()
         }
     })
+*/
 
 }
