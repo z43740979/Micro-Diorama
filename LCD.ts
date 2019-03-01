@@ -761,6 +761,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        directDislayImage("1：", 0, 0, 320, 240)
     }
 
     /**
