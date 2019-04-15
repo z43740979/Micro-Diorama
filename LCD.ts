@@ -30,7 +30,7 @@ namespace LCD {
     const xMax = 320
     const yMin = 0
     const yMax = 240
-    const tick = 100
+    const tick = 300
 
     let pixel_8k = 0x0f
     let pixel_32k = 0x0f
@@ -739,28 +739,23 @@ namespace LCD {
     //% blockGap=10
     //% block="begin"
     export function begin() {
-        while (pins.digitalReadPin(DigitalPin.P14) == 0) {
-            spiStart()
-            basic.pause(100)
-            spiEnd()
-            basic.pause(100)
-        }
-        spiStart()
-        basic.pause(100)
-        spiEnd()
-        basic.pause(100)
-        basic.pause(500)
-        while (flag)
-            flag = true
-        lcdinit()
         spiStart()
         writeHead()
-        spiWrite8(0x07)
         spiWrite8(0x01)
-        spiWrite8(0x0B)
         spiEnd()
         spiWiat()
-        flag = false
+        directDislayImage("1：", 0, 0, 320, 240)
+        spiStart()
+        writeHead()
+        spiWrite8(0x01)
+        spiEnd()
+        spiWiat()
+        directDislayImage("1：", 0, 0, 320, 240)
+        spiStart()
+        writeHead()
+        spiWrite8(0x01)
+        spiEnd()
+        spiWiat()
         directDislayImage("1：", 0, 0, 320, 240)
     }
 
