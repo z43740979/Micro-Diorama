@@ -30,7 +30,7 @@ namespace LCD {
     const xMax = 320
     const yMin = 0
     const yMax = 240
-    const tick = 100
+    const tick = 300
 
     let pixel_8k = 0x0f
     let pixel_32k = 0x0f
@@ -161,7 +161,7 @@ namespace LCD {
         //% blockGap=8
         //% xEnd.min=0 xEnd.max=319
         //% yEnd.min=0 yEnd.max=239
-        //% weight=10
+        //% weight=20
         //% parts="neopixel"
         showImage(xEnd: number, yEnd: number) {
             while (flag)
@@ -343,7 +343,7 @@ namespace LCD {
          */
         //% blockId="hideImage" block="Hide image %image"
         //% blockGap=8
-        //% weight=10
+        //% weight=15
         //% parts="neopixel"
         hideImage() {
             while (flag)
@@ -419,6 +419,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="displayCharacter"
@@ -452,6 +453,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="drawLine"
@@ -482,6 +484,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="drawCircle"
@@ -518,6 +521,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="drawRectangle"
@@ -554,6 +558,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="drawPoint"
@@ -580,6 +585,7 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
 
     //% blockId="importImageName"
@@ -665,6 +671,7 @@ namespace LCD {
         spiWiat()
         flag = false
         return image
+        basic.pause(100)
     }
 
     /*
@@ -734,33 +741,31 @@ namespace LCD {
         spiEnd()
         spiWiat()
         flag = false
+        basic.pause(100)
     }
     //% blockId="begin"
     //% blockGap=10
+    //% weight=90
     //% block="begin"
     export function begin() {
-        while (pins.digitalReadPin(DigitalPin.P14) == 0) {
-            spiStart()
-            basic.pause(100)
-            spiEnd()
-            basic.pause(100)
-        }
-        spiStart()
-        basic.pause(100)
-        spiEnd()
-        basic.pause(100)
-        basic.pause(500)
-        while (flag)
-            flag = true
-        lcdinit()
         spiStart()
         writeHead()
-        spiWrite8(0x07)
         spiWrite8(0x01)
-        spiWrite8(0x0B)
         spiEnd()
         spiWiat()
-        flag = false
+        directDislayImage("1：", 0, 0, 320, 240)
+        spiStart()
+        writeHead()
+        spiWrite8(0x01)
+        spiEnd()
+        spiWiat()
+        directDislayImage("1：", 0, 0, 320, 240)
+        spiStart()
+        writeHead()
+        spiWrite8(0x01)
+        spiEnd()
+        spiWiat()
+        directDislayImage("1：", 0, 0, 320, 240)
     }
 
     /**
