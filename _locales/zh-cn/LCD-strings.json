@@ -25,7 +25,7 @@
     "LCD.Image.hideImage|block": "隐藏图片 %image",
     "LCD.clearScreen|block": "设置背景颜色为 %color",
     "LCD.begin|block": "开始",
-    "LCD.onEvent|block":"当|%button|按下时",
+    "LCD.onEvent|block": "当|%button|按下时",
     "LCD.displayCharacter|block": "显示字符 %character 颜色为 %colorType x起始位置为 %x y起始位置为 %y 字体大小 %sizeType",
     "LCD.drawLine|block": "画线 | 颜色为 %colorType x起始位置为 %xs y起始位置为 %ys x终止位置为 %xe y终止位置为 %ye",
     "LCD.drawCircle|block": "画圆 | 半径为 %radius 颜色为 %colorType 圆心坐标x为 %x 圆心坐标y为 %y",
