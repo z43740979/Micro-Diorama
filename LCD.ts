@@ -266,6 +266,17 @@ namespace LCD {
                 xEnd2 = 0
                 yEnd2 = 0
             }
+            if (this.pixel > 29) {
+                overlapping = 1
+                xStart1 = 0
+                yStart1 = 0
+                xEnd1 = 0
+                yEnd1 = 0
+                xStart2 = 0
+                yStart2 = 0
+                xEnd2 = 0
+                yEnd2 = 0
+            }
             spiStart()
             writeHead()
             spiWrite8(11)
@@ -282,6 +293,10 @@ namespace LCD {
             spiWrite8(this.pixel)
             spiWrite16(xEnd)
             spiWrite16(yEnd)
+            spiWrite16(this.width)
+            spiWrite16(this.height)
+            spiWrite16(this.xStart)
+            spiWrite16(this.yStart)
             spiEnd()
             spiWiat()
             this.xStart = xEnd
@@ -493,13 +508,19 @@ namespace LCD {
     //% y.min=0 y.max=239
     //% block="Draw circle | radius %radius color %color center coordinates x %x center coordinates y %y"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
+    //% blockSetVariable=Circle
     export function drawCircle(radius: number, color: colorFillType, x: number, y: number) {
         while (flag)
             flag = true
+        let circle = new Image()
         if (x > xMax || y > yMax || x < xMin || y < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
-            return
+            return null
         }
+        circle.xStart = x
+        circle.yStart = y
+        circle.width = radius
+        circle.height = radius
         lcdinit()
         spiStart()
         writeHead()
@@ -509,8 +530,10 @@ namespace LCD {
         spiWrite16(y)
         if (color > 6) {
             spiWrite8(color - 10)
+            circle.pixel = 20 + color
         } else {
             spiWrite8(color)
+            circle.pixel = 40 + color
         }
         spiWrite8(radius)
         if (color > 6) {
@@ -522,6 +545,7 @@ namespace LCD {
         spiWiat()
         flag = false
         basic.pause(100)
+        return circle
     }
 
     //% blockId="drawRectangle"
@@ -532,13 +556,19 @@ namespace LCD {
     //% ye.min=0 ye.max=239
     //% block="Draw rectangle | color %color x starting position %xs y starting position %ys x ending position %xe y ending position %ye"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
+    //% blockSetVariable=Rectangle
     export function drawRectangle(color: colorFillType, xs: number, ys: number, xe: number, ye: number) {
         while (flag)
             flag = true
+        let rectangle = new Image()
         if (xs > xMax || xe > xMax || ys > yMax || ye > yMax || xs < xMin || xe < xMin || ys < yMin || ye < yMin) {
             serial.writeLine("x from 0 to 320,y from 0 to 240")
-            return
+            return null
         }
+        rectangle.xStart = xs
+        rectangle.yStart = ys
+        rectangle.width = xe - xs
+        rectangle.height = ye - ys
         lcdinit()
         spiStart()
         writeHead()
@@ -551,14 +581,17 @@ namespace LCD {
         if (color > 6) {
             spiWrite8(color - 10)
             spiWrite8(1)
+            rectangle.pixel = color
         } else {
             spiWrite8(color)
             spiWrite8(0)
+            rectangle.pixel = 20 + color
         }
         spiEnd()
         spiWiat()
         flag = false
         basic.pause(100)
+        return rectangle
     }
 
     //% blockId="drawPoint"
@@ -701,14 +734,40 @@ namespace LCD {
         if (!image1 || !image2) return 0
         while (flag)
             flag = true
-        //        if ((image2.xStart > image1.xStart + image1.width || image2.xStart + image2.width < image1.xStart) && (image2.yStart > image1.yStart + image1.height || image2.yStart + image2.height < image1.yStart)) {
-        if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart + image1.width) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart + image1.height)) {
-            flag = false
-            return 1
-        } else {
-            flag = false
-            return 0
+        if ((image1.pixel < 29) && (image2.pixel < 29)) {
+            if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart + image1.width) && (image2.yStart > image1.yStart - image2.height && image2.yStart < image1.yStart + image1.height)) {
+                flag = false
+                return 1
+            } else {
+                flag = false
+                return 0
+            }
+        } else if ((image1.pixel > 29) && (image2.pixel < 29)) {
+            if ((image1.xStart > image2.xStart - image1.width && image1.xStart < image2.xStart + image2.width + image1.width) && (image1.yStart > image2.yStart - image1.width && image1.yStart < image2.yStart + image2.height + image1.width)) {
+                flag = false
+                return 1
+            } else {
+                flag = false
+                return 0
+            }
+        } else if ((image1.pixel < 29) && (image2.pixel > 29)) {
+            if ((image2.xStart > image1.xStart - image2.width && image2.xStart < image1.xStart + image1.width + image2.width) && (image2.yStart > image1.yStart - image2.width && image2.yStart < image1.yStart + image1.height + image2.width)) {
+                flag = false
+                return 1
+            } else {
+                flag = false
+                return 0
+            }
+        } else if ((image1.pixel > 29) && (image2.pixel > 29)) {
+            if ((Math.pow((image1.xStart - image2.xStart), 2) + Math.pow((image1.yStart - image2.yStart), 2)) < Math.pow((image1.width + image2.width), 2)) {
+                flag = false
+                return 1
+            } else {
+                flag = false
+                return 0
+            }
         }
+        return 0
     }
 
     //% blockId="directDislayImage"
@@ -759,13 +818,6 @@ namespace LCD {
         spiWrite8(0x01)
         spiEnd()
         spiWiat()
-        directDislayImage("1：", 0, 0, 320, 240)
-        spiStart()
-        writeHead()
-        spiWrite8(0x01)
-        spiEnd()
-        spiWiat()
-        directDislayImage("1：", 0, 0, 320, 240)
     }
 
     /**
