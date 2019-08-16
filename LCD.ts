@@ -367,7 +367,7 @@ namespace LCD {
             spiStart()
             writeHead()
             spiWrite8(0x05)
-            spiWrite8(10)
+            spiWrite8(this.pixel)
             spiWrite16(this.xStart)
             spiWrite16(this.xStart + this.width)
             spiWrite16(this.yStart)
