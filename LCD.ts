@@ -159,9 +159,9 @@ namespace LCD {
          */
         //% blockId="showImage" block="Show image %image at x %xEnd y%yEnd"
         //% blockGap=8
+        //% weight=86
         //% xEnd.min=0 xEnd.max=319
         //% yEnd.min=0 yEnd.max=239
-        //% weight=20
         //% parts="neopixel"
         showImage(xEnd: number, yEnd: number) {
             while (flag)
@@ -309,7 +309,7 @@ namespace LCD {
          */
         //% blockId="freeImage" block="release image handle %image"
         //% blockGap=8
-        //% weight=10
+        //% weight=83
         //% parts="neopixel"
         freeImage() {
             while (flag)
@@ -358,7 +358,7 @@ namespace LCD {
          */
         //% blockId="hideImage" block="Hide image %image"
         //% blockGap=8
-        //% weight=15
+        //% weight=84
         //% parts="neopixel"
         hideImage() {
             while (flag)
@@ -419,6 +419,7 @@ namespace LCD {
 
     //% blockId="clearScreen"
     //% blockGap=10
+    //% weight=90
     //% block="Set background color to %color"
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=2
     export function clearScreen(color: colorType) {
@@ -439,6 +440,7 @@ namespace LCD {
 
     //% blockId="displayCharacter"
     //% blockGap=10
+    //% weight=80
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
     //% block="Display character %character color %colorType x starting position %x y starting position %y size %sizeType"
@@ -473,6 +475,7 @@ namespace LCD {
 
     //% blockId="drawLine"
     //% blockGap=10
+    //% weight=81
     //% xs.min=0 xs.max=319
     //% ys.min=0 ys.max=239
     //% xe.min=0 xe.max=319
@@ -504,6 +507,7 @@ namespace LCD {
 
     //% blockId="drawCircle"
     //% blockGap=10
+    //% weight=87
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
     //% block="Draw circle | radius %radius color %color center coordinates x %x center coordinates y %y"
@@ -550,6 +554,7 @@ namespace LCD {
 
     //% blockId="drawRectangle"
     //% blockGap=10
+    //% weight=88
     //% xs.min=0 xs.max=319
     //% ys.min=0 ys.max=239
     //% xe.min=0 xe.max=319
@@ -596,6 +601,7 @@ namespace LCD {
 
     //% blockId="drawPoint"
     //% blockGap=10
+    //% weight=82
     //% x.min=0 x.max=319
     //% y.min=0 y.max=239
     //% block="Draw point | color %colorType | x-coordinate %x | y-coordinate %y"
@@ -623,6 +629,7 @@ namespace LCD {
 
     //% blockId="importImageName"
     //% blockGap=10
+    //% weight=89
     //% width.min=0 width.max=320
     //% height.min=0 height.max=240
     //% block="Import image | name: %name format %format width %width height %height"
@@ -728,6 +735,7 @@ namespace LCD {
         }
     */
     //% blockId="touch"
+    //% weight=85
     //% blockGap=10
     //% block="Determine if image 1 %image1 and image 2 %image2 overlap"
     export function touch(image1: Image, image2: Image): number {
@@ -772,6 +780,7 @@ namespace LCD {
 
     //% blockId="directDislayImage"
     //% blockGap=10
+    //% weight=79
     //% xStart.min=0 xStart.max=319
     //% yStart.min=0 yStart.max=239
     //% width.min=0 width.max=320
@@ -804,7 +813,7 @@ namespace LCD {
     }
     //% blockId="begin"
     //% blockGap=10
-    //% weight=90
+    //% weight=91
     //% block="begin"
     export function begin() {
         spiStart()
@@ -823,7 +832,7 @@ namespace LCD {
     /**
      * Registers code to run when a DFRobot gamer:bit event is detected.
      */
-    //% weight=60
+    //% weight=78
     //% blockGap=50
     //% blockId=gamePad_onEvent block="on pin |%button press"
     //% button.fieldEditor="gridpicker" button.fieldOptions.columns=3
